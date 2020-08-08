@@ -125,13 +125,13 @@ Port 9000 : GUI for HAProxy
 
 Please download in cloud.redhat.com and choose Red Hat Openshift Cluster Manager :
 
-![gambar satu](https://github.com/ProjectOprec/instalasi-openshift/master/image-20191121164418499.png)
+![gambar satu](https://github.com/ProjectOprec/instalasi-openshift/blob/master/image-20191121164418499.png)
 
 Choose Bare Metal :
 
-![gambar dua](https://github.com/ProjectOprec/instalasi-openshift/master/image-20191121164524796.png)
+![gambar dua](https://github.com/ProjectOprec/instalasi-openshift/blob/master/image-20191121164524796.png)
 
-![gambar tiga](https://github.com/ProjectOprec/instalasi-openshift/master/image-20191121164655226.png)
+![gambar tiga](https://github.com/ProjectOprec/instalasi-openshift/blob/master/image-20191121164655226.png)
 
 Download RHCOS :
 
