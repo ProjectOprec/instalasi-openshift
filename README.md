@@ -1,10 +1,10 @@
-# Installation Openshift 4.x
+# Installation Openshift 4.3
 
 
 
-## CHAPTER 1. Requirement for POC Openshift 4.x
+## CHAPTER 1. Requirement for POC Openshift 4.3
 
-> **WARNING :** Please make sure the spec is same and size memory is very important.. Don't set Memory under 16 GB for Cluster Openshift 4.x
+> **WARNING :** Please make sure the spec is same and size memory is very important.. Don't set Memory under 16 GB for Cluster Openshift 4.3
 
 1. Bastion = 1 (vCPU = 4 , Memory = 4 GB, Harddisk = 50 GB)
 2. Bootstrap = 1 (vCPU = 4, Memory = 16 GB, Harddisk = 100 GB)
@@ -53,19 +53,19 @@ root@bastion# yum -y install bind bind-utils
 
 root@bastion# setenforce 0
 
-root@bastion# cp openshift4.x/dns/named.conf /etc/named.conf
+root@bastion# cp openshift4.3/dns/named.conf /etc/named.conf
 ```
 
 Setting for PTR :
 
 ```
-root@bastion# cp openshift4.x/dns/10.10.10.in-addr.arpa /var/named/
+root@bastion# cp openshift4.3/dns/10.10.10.in-addr.arpa /var/named/
 ```
 
 Setting for A and SRV Record :
 
 ```
-root@bastion# cp openshift4.x/dns/ocp4poc.example.com /var/named/
+root@bastion# cp openshift4.3/dns/ocp4poc.example.com /var/named/
 ```
 
 Please restart the service :
@@ -104,7 +104,7 @@ NOTE: Update `/var/named/ocp4poc.example.com and 10.10.10.in-addr.arpa` to match
 ```
 root@bastion# yum -y install haproxy
 
-root@bastion# cp openshift4.x/haproxy/haproxy.cfg /etc/haproxy/
+root@bastion# cp openshift4.3/haproxy/haproxy.cfg /etc/haproxy/
 ```
 
 Please edit IP Address for Bootstrap , master and worker.. Please double check in Your DNS Setting
@@ -135,7 +135,7 @@ Choose Bare Metal :
 
 Download RHCOS :
 
-https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.x/latest/
+https://mirror.openshift.com/pub/openshift-v4/dependencies/rhcos/4.3/latest/
 
 Download Command-Line Interface :
 
@@ -152,7 +152,7 @@ root@bastion# yum -y install httpd
 change the port Listen to **Port 8000**
 
 ```
-root@bastion# cp openshift4.x/httpd/httpd.conf /etc/httpd/conf/httpd.conf
+root@bastion# cp openshift4.3/httpd/httpd.conf /etc/httpd/conf/httpd.conf
 
 root@bastion# mkdir -p /var/www/html/metal/
 ```
@@ -162,7 +162,7 @@ root@bastion# mkdir -p /var/www/html/metal/
 Please check location your download installer RHCOS :
 
 ```
-root@bastion# cp rhcos-4.x.0-x86_64-metal-bios.raw.gz /var/www/html/metal
+root@bastion# cp rhcos-4.3.0-x86_64-metal-bios.raw.gz /var/www/html/metal
 ```
 
 Start the services :
@@ -194,7 +194,7 @@ port=0
 ```
 
 ```
-root@bastion# cp openshift.4.x/dnsmasq/dnsmasq-pxe.conf /etc/dnsmasq.d/dnsmasq-pxe.conf
+root@bastion# cp openshift.4.3/dnsmasq/dnsmasq-pxe.conf /etc/dnsmasq.d/dnsmasq-pxe.conf
 ```
 
 NOTE: Update `/etc/dnsmasq.d/dnsmasq-pxe.conf` to match environment
@@ -202,7 +202,7 @@ NOTE: Update `/etc/dnsmasq.d/dnsmasq-pxe.conf` to match environment
 ```
 root@bastion# mkdir -pv /var/lib/tftpboot/pxelinux.cfg/
 
-root@bastion# cp openshift4.x/pxelinux.cfg/default /var/lib/tftpboot/pxelinux.cfg/default
+root@bastion# cp openshift4.3/pxelinux.cfg/default /var/lib/tftpboot/pxelinux.cfg/default
 ```
 
 Copy Installer Image and Kernel ( Please make sure your source installer CoreOS)
@@ -210,9 +210,9 @@ Copy Installer Image and Kernel ( Please make sure your source installer CoreOS)
 ```
 root@bastion# mkdir -p /var/lib/tftpboot/rhcos/
 
-root@bastion# cp rhcos-4.x.0-x86_64-installer-initramfs.img /var/lib/tftpboot/rhcos/rhcos-initramfs.img
+root@bastion# cp rhcos-4.3.0-x86_64-installer-initramfs.img /var/lib/tftpboot/rhcos/rhcos-initramfs.img
 
-root@bastion# cp rhcos-4.x.0-x86_64-installer-kernel /var/lib/tftpboot/rhcos/rhcos-kernel
+root@bastion# cp rhcos-4.3.0-x86_64-installer-kernel /var/lib/tftpboot/rhcos/rhcos-kernel
 ```
 
 You can inspect the file /var/lib/tftpboot/pxelinux.cfg/default
@@ -237,7 +237,7 @@ root@bastion# systemctl enable dnsmasq
 ## CHAPTER 7. Prepare Router and Firewall
 
 ```
-root@bastion# chmod 777 openshift4.x/patch/firewall.sh
+root@bastion# chmod 777 openshift4.3/patch/firewall.sh
 ```
 
 Please edit interface NIC with your environment firewall.sh
@@ -253,9 +253,9 @@ root@bastion# ./firewall.sh
 Extract tools openshift
 
 ```
-root@bastion# tar -xvf openshift-client-linux-4.x.2.tar.gz
+root@bastion# tar -xvf openshift-client-linux-4.3.2.tar.gz
 
-root@bastion# tar -xvf openshift-install-linux-4.x.2.tar.gz
+root@bastion# tar -xvf openshift-install-linux-4.3.2.tar.gz
 
 root@bastion# mv oc kubectl openshift-install /usr/bin/
 ```
@@ -269,7 +269,7 @@ root@bastion# mkdir /root/ocp4poc/
 root@bastion# cd /root/ocp4poc/
 ```
 
-Please insert the credential : ( Sample you can check in openshift4.x/patch/install-config-UPDATETHIS.yaml)
+Please insert the credential : ( Sample you can check in openshift4.3/patch/install-config-UPDATETHIS.yaml)
 
 ```
 root@bastion# cat install-config.yaml
@@ -323,7 +323,7 @@ root@bastion# sed -i 's/mastersSchedulable: true/mastersSchedulable: false/g' ma
 Copy Patching Network Config
 
 ```
-root@bastion# cp openshift4.x/patch/ 10-*.yaml /root/ocp4poc/openshift/
+root@bastion# cp openshift4.3/patch/ 10-*.yaml /root/ocp4poc/openshift/
 ```
 
 Generate ignition configs
@@ -365,7 +365,7 @@ core@bootstrap$ journalctl
 if success :
 
 ```
-DEBUG OpenShift Installer v4.x.1
+DEBUG OpenShift Installer v4.3.1
 DEBUG Built from commit e349157f325dba2d06666987603da39965be5319
 INFO Waiting up to 30m0s for the Kubernetes API at https://api.ocp4poc.example.com:6443...
 INFO API v1.14.6+868bc38 up
@@ -379,7 +379,7 @@ if bootstrap resources is done, so please shutdown the VM and start all worker n
 
 
 
-## CHAPTER 9. Monitoring Installation Master and Worker Openshift 4.x
+## CHAPTER 9. Monitoring Installation Master and Worker Openshift 4.3
 
 Login to the cluster :
 
@@ -406,33 +406,33 @@ You can monitor the progress installation :
 root@bastion# oc get co
 
 NAME                                       VERSION   AVAILABLE   PROGRESSING   DEGRADED   SINCE
-authentication                             4.x.2     True        False         True       
-cloud-credential                           4.x.2     True        False         False     
-cluster-autoscaler                         4.x.2     True        False         False     
-console                                    4.x.2     True        False         True       
-dns                                        4.x.2     False       True          True      
-image-registry                             4.x.2     False       True          False     
-ingress                                    4.x.2     False       True          False     
-insights                                   4.x.2     True        False         True      
-kube-apiserver                             4.x.2     True        True          True       
-kube-controller-manager                    4.x.2     True        False         True       
-kube-scheduler                             4.x.2     True        False         True       
-machine-api                                4.x.2     True        False         False     
-machine-config                             4.x.2     False       False         True       
-marketplace                                4.x.2     True        False         False     
-monitoring                                 4.x.2     False       True          True       
-network                                    4.x.2     True        True          False     
-node-tuning                                4.x.2     False       False         True       
-openshift-apiserver                        4.x.2     False       False         False     
-openshift-controller-manager               4.x.2     False       False         False     
-openshift-samples                          4.x.2     True        False         False     
-operator-lifecycle-manager                 4.x.2     True        False         False     
-operator-lifecycle-manager-catalog         4.x.2     True        False         False     
-operator-lifecycle-manager-packageserver   4.x.2     False       True          False     
-service-ca                                 4.x.2     True        True          False     
-service-catalog-apiserver                  4.x.2     True        False         False     
-service-catalog-controller-manager         4.x.2     True        False         False     
-storage                                    4.x.2     True        False         False     
+authentication                             4.3.2     True        False         True       
+cloud-credential                           4.3.2     True        False         False     
+cluster-autoscaler                         4.3.2     True        False         False     
+console                                    4.3.2     True        False         True       
+dns                                        4.3.2     False       True          True      
+image-registry                             4.3.2     False       True          False     
+ingress                                    4.3.2     False       True          False     
+insights                                   4.3.2     True        False         True      
+kube-apiserver                             4.3.2     True        True          True       
+kube-controller-manager                    4.3.2     True        False         True       
+kube-scheduler                             4.3.2     True        False         True       
+machine-api                                4.3.2     True        False         False     
+machine-config                             4.3.2     False       False         True       
+marketplace                                4.3.2     True        False         False     
+monitoring                                 4.3.2     False       True          True       
+network                                    4.3.2     True        True          False     
+node-tuning                                4.3.2     False       False         True       
+openshift-apiserver                        4.3.2     False       False         False     
+openshift-controller-manager               4.3.2     False       False         False     
+openshift-samples                          4.3.2     True        False         False     
+operator-lifecycle-manager                 4.3.2     True        False         False     
+operator-lifecycle-manager-catalog         4.3.2     True        False         False     
+operator-lifecycle-manager-packageserver   4.3.2     False       True          False     
+service-ca                                 4.3.2     True        True          False     
+service-catalog-apiserver                  4.3.2     True        False         False     
+service-catalog-controller-manager         4.3.2     True        False         False     
+storage                                    4.3.2     True        False         False     
 ```
 
 Check the password and Web console :
