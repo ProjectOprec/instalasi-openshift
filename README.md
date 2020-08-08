@@ -47,7 +47,7 @@ Worker : 10.10.10.12 - 10.10.10.17 /24
 Setting A Record in bind :
 
 ```
-root@bastion# git clone https://github.com/h4ckersmooth88/openshift4.x
+root@bastion# git clone https://github.com/ProjectOprec/instalasi-openshift
 
 root@bastion# yum -y install bind bind-utils
 
