@@ -6,11 +6,10 @@
 
 > **WARNING :** Please make sure the spec is same and size memory is very important.. Don't set Memory under 12 GB for Cluster Openshift 4.2
 
-1. Master = 1 ( vCPU = 4, Memory = 12 GB, Harddisk = 100 GB )
-2. Worker = 4 (vCPU = 4, Memory = 12 GB, Harddisk 1 = 100 GB, Harddisk 2 = 200 GB )
-   * for Worker and Storage Node ( Rook-Ceph )
-3. Bootstrap = 1 (vCPU = 4, Memory = 12 GB, Harddisk = 100 GB )
-4. Helper = 1 ( vCPU = 4 , Memory = 6 GB, Harddisk = 100 GB )
+1. Bastion = 1 (vCPU = 4 , Memory = 4 GB, Harddisk = 50 GB)
+2. Bootstrap = 1 (vCPU = 4, Memory = 16 GB, Harddisk = 100 GB)
+3. Master = 1 (vCPU = 4, Memory = 16 GB, Harddisk = 100 GB)
+4. Worker = 1 (vCPU = 4, Memory = 16 GB, Harddisk 1 = 100 GB)
 
 ==============================================================================
 
@@ -19,16 +18,15 @@ Network Requirement :
 1. Master, Worker and Bootstrap : 1 NIC ( Host-only ), Please make sure not DHCP Server in this Connection.
 - Host-only ( 10.10.10.0/24 ) - PLEASE CLEAR NOT DHCP SERVER IN THIS NETWORK
 
-  
-
-2. Helper : 2 NIC (1 NIC for External, 1 NIC for Host-only)
-* Helper for DNS Server, HAProxy Load Balancer, DNSMasq, TFTP Server and Router
+ 
+2. Bastion : 2 NIC (1 NIC for External, 1 NIC for Host-only)
+* bastion for DNS Server, HAProxy Load Balancer, DNSMasq, TFTP Server and Router
 
   - External ( 192.168.1.0/24 ) - INTERNET ACCESS
   - Host-only ( 10.10.10.0/24 ) - PLEASE CLEAR NOT DHCP SERVER IN THIS NETWORK
   
 
-Helper : 10.10.10.1 /24
+Bastion : 10.10.10.1 /24
 
 Bootstrap : 10.10.10.10 /24
 
@@ -49,49 +47,49 @@ Worker : 10.10.10.12 - 10.10.10.17 /24
 Setting A Record in bind :
 
 ```
-root@helper# git clone https://github.com/h4ckersmooth88/openshift4.2
+root@bastion# git clone https://github.com/h4ckersmooth88/openshift4.2
 
-root@helper# yum -y install bind bind-utils
+root@bastion# yum -y install bind bind-utils
 
-root@helper# setenforce 0
+root@bastion# setenforce 0
 
-root@helper# cp openshift4.2/dns/named.conf /etc/named.conf
+root@bastion# cp openshift4.2/dns/named.conf /etc/named.conf
 ```
 
 Setting for PTR :
 
 ```
-root@helper# cp openshift4.2/dns/10.10.10.in-addr.arpa /var/named/
+root@bastion# cp openshift4.2/dns/10.10.10.in-addr.arpa /var/named/
 ```
 
 Setting for A and SRV Record :
 
 ```
-root@helper# cp openshift4.2/dns/ocp4poc.example.com /var/named/
+root@bastion# cp openshift4.2/dns/ocp4poc.example.com /var/named/
 ```
 
 Please restart the service :
 
 ```
-root@helper# systemctl restart named
+root@bastion# systemctl restart named
 
-root@helper# systemctl enable named
+root@bastion# systemctl enable named
 ```
 
 Please make sure DNS can reply your Query, Detail IP you can check /var/named/ocp4poc.example.com :
 
 ```
-root@helper# dig @localhost -t srv _etcd-server-ssl._tcp.ocp4poc.example.com.
+root@bastion# dig @localhost -t srv _etcd-server-ssl._tcp.ocp4poc.example.com.
 
-root@helper# dig @localhost bootstrap.ocp4poc.example.com
+root@bastion# dig @localhost bootstrap.ocp4poc.example.com
 
-root@helper# dig -x 10.10.10.10
+root@bastion# dig -x 10.10.10.10
 ```
 
 Add line nameserver to localhost
 
 ```
-root@helper# cat /etc/resolv.conf
+root@bastion# cat /etc/resolv.conf
 
 nameserver 127.0.0.1
 nameserver 8.8.8.8
@@ -104,9 +102,9 @@ NOTE: Update `/var/named/ocp4poc.example.com and 10.10.10.in-addr.arpa` to match
 ### CHAPTER 3. Set HAProxy for Load Balancer
 
 ```
-root@helper# yum -y install haproxy
+root@bastion# yum -y install haproxy
 
-root@helper# cp openshift4.2/haproxy/haproxy.cfg /etc/haproxy/
+root@bastion# cp openshift4.2/haproxy/haproxy.cfg /etc/haproxy/
 ```
 
 Please edit IP Address for Bootstrap , master and worker.. Please double check in Your DNS Setting
@@ -150,15 +148,15 @@ https://mirror.openshift.com/pub/openshift-v4/clients/ocp/latest/
 ## CHAPTER 5. Set Web Server
 
 ```
-root@helper# yum -y install httpd
+root@bastion# yum -y install httpd
 ```
 
 change the port Listen to **Port 8000**
 
 ```
-root@helper# cp openshift4.2/httpd/httpd.conf /etc/httpd/conf/httpd.conf
+root@bastion# cp openshift4.2/httpd/httpd.conf /etc/httpd/conf/httpd.conf
 
-root@helper# mkdir -p /var/www/html/metal/
+root@bastion# mkdir -p /var/www/html/metal/
 ```
 
 
@@ -166,14 +164,14 @@ root@helper# mkdir -p /var/www/html/metal/
 Please check location your download installer RHCOS :
 
 ```
-root@helper# cp rhcos-4.2.0-x86_64-metal-bios.raw.gz /var/www/html/metal
+root@bastion# cp rhcos-4.2.0-x86_64-metal-bios.raw.gz /var/www/html/metal
 ```
 
 Start the services :
 
 ```
-root@helper# systemctl start httpd
-root@helper# systemctl enable httpd
+root@bastion# systemctl start httpd
+root@bastion# systemctl enable httpd
 ```
 
 
@@ -181,9 +179,9 @@ root@helper# systemctl enable httpd
 ## CHAPTER 6. Set Tftpd Server and DNSMasq
 
 ```
-root@helper# yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+root@bastion# yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
 
-root@helper# yum -y install tftp-server dnsmasq syslinux-tftpboot tree python36 jq oniguruma
+root@bastion# yum -y install tftp-server dnsmasq syslinux-tftpboot tree python36 jq oniguruma
 ```
 
 
@@ -198,25 +196,25 @@ port=0
 ```
 
 ```
-root@helper# cp openshift.4.2/dnsmasq/dnsmasq-pxe.conf /etc/dnsmasq.d/dnsmasq-pxe.conf
+root@bastion# cp openshift.4.2/dnsmasq/dnsmasq-pxe.conf /etc/dnsmasq.d/dnsmasq-pxe.conf
 ```
 
 NOTE: Update `/etc/dnsmasq.d/dnsmasq-pxe.conf` to match environment
 
 ```
-root@helper# mkdir -pv /var/lib/tftpboot/pxelinux.cfg/
+root@bastion# mkdir -pv /var/lib/tftpboot/pxelinux.cfg/
 
-root@helper# cp openshift4.2/pxelinux.cfg/default /var/lib/tftpboot/pxelinux.cfg/default
+root@bastion# cp openshift4.2/pxelinux.cfg/default /var/lib/tftpboot/pxelinux.cfg/default
 ```
 
 Copy Installer Image and Kernel ( Please make sure your source installer CoreOS)
 
 ```
-root@helper# mkdir -p /var/lib/tftpboot/rhcos/
+root@bastion# mkdir -p /var/lib/tftpboot/rhcos/
 
-root@helper# cp rhcos-4.2.0-x86_64-installer-initramfs.img /var/lib/tftpboot/rhcos/rhcos-initramfs.img
+root@bastion# cp rhcos-4.2.0-x86_64-installer-initramfs.img /var/lib/tftpboot/rhcos/rhcos-initramfs.img
 
-root@helper# cp rhcos-4.2.0-x86_64-installer-kernel /var/lib/tftpboot/rhcos/rhcos-kernel
+root@bastion# cp rhcos-4.2.0-x86_64-installer-kernel /var/lib/tftpboot/rhcos/rhcos-kernel
 ```
 
 You can inspect the file /var/lib/tftpboot/pxelinux.cfg/default
@@ -227,13 +225,13 @@ Please check make sure your environment :
 2. coreos.inst.ignition_url and coreos.inst.image_url
 
 ```
-root@helper# systemctl restart tftp
+root@bastion# systemctl restart tftp
 
-root@helper# systemctl enable fftp
+root@bastion# systemctl enable fftp
 
-root@helper# systemctl restart dnsmasq
+root@bastion# systemctl restart dnsmasq
 
-root@helper# systemctl enable dnsmasq
+root@bastion# systemctl enable dnsmasq
 ```
 
 
@@ -241,13 +239,13 @@ root@helper# systemctl enable dnsmasq
 ## CHAPTER 7. Prepare Router and Firewall
 
 ```
-root@helper# chmod 777 openshift4.2/patch/firewall.sh
+root@bastion# chmod 777 openshift4.2/patch/firewall.sh
 ```
 
 Please edit interface NIC with your environment firewall.sh
 
 ```
-root@helper# ./firewall.sh
+root@bastion# ./firewall.sh
 ```
 
 
@@ -257,11 +255,11 @@ root@helper# ./firewall.sh
 Extract tools openshift
 
 ```
-root@helper# tar -xvf openshift-client-linux-4.2.2.tar.gz
+root@bastion# tar -xvf openshift-client-linux-4.2.2.tar.gz
 
-root@helper# tar -xvf openshift-install-linux-4.2.2.tar.gz
+root@bastion# tar -xvf openshift-install-linux-4.2.2.tar.gz
 
-root@helper# mv oc kubectl openshift-install /usr/bin/
+root@bastion# mv oc kubectl openshift-install /usr/bin/
 ```
 
 Create the installation manifests : ( Please make sure execute command openshift-install in directory /root/ocp4poc/)
@@ -269,14 +267,14 @@ Create the installation manifests : ( Please make sure execute command openshift
 NOTE: please make sure Work Directory to create manifest and ignition config in /root/ocp4poc
 
 ```
-root@helper# mkdir /root/ocp4poc/
-root@helper# cd /root/ocp4poc/
+root@bastion# mkdir /root/ocp4poc/
+root@bastion# cd /root/ocp4poc/
 ```
 
 Please insert the credential : ( Sample you can check in openshift4.2/patch/install-config-UPDATETHIS.yaml)
 
 ```
-root@helper# cat install-config.yaml
+root@bastion# cat install-config.yaml
 ```
 
 
@@ -309,39 +307,39 @@ EOF
 ```
 
 ```
-root@helper# cp install-config.yaml /root/ocp4poc/
+root@bastion# cp install-config.yaml /root/ocp4poc/
 ```
 
 Please make sure install-config.yaml in /root/ocp4poc/ directory
 
 ```
-root@helper# openshift-install create manifests
+root@bastion# openshift-install create manifests
 ```
 
 Prevent Pods from being scheduled on the control plane machines
 
 ```
-root@helper# sed -i 's/mastersSchedulable: true/mastersSchedulable: false/g' manifests/cluster-scheduler-02-config.yml
+root@bastion# sed -i 's/mastersSchedulable: true/mastersSchedulable: false/g' manifests/cluster-scheduler-02-config.yml
 ```
 
 Copy Patching Network Config
 
 ```
-root@helper# cp openshift4.2/patch/ 10-*.yaml /root/ocp4poc/openshift/
+root@bastion# cp openshift4.2/patch/ 10-*.yaml /root/ocp4poc/openshift/
 ```
 
 Generate ignition configs
 
 ```
-root@helper# openshift-install create ignition-configs
+root@bastion# openshift-install create ignition-configs
 ```
 
 Copy the Ignition to Web Server
 
 ```
-root@helper# cd /root/ocp4poc/
+root@bastion# cd /root/ocp4poc/
 
-root@helper# cp *.ign /var/www/html/
+root@bastion# cp *.ign /var/www/html/
 ```
 
 
@@ -355,13 +353,13 @@ For now you can Booting Bootstrap and Also Master ONLY with PXE Boot, please don
 Monitoring Bootstrap
 
 ```
-root@helper# openshift-install wait-for bootstrap-complete --log-level debug
+root@bastion# openshift-install wait-for bootstrap-complete --log-level debug
 ```
 
 You can investigation with Bootstrap node
 
 ```
-root@helper# ssh core@bootstrap.ocp4poc.example.com
+root@bastion# ssh core@bootstrap.ocp4poc.example.com
 
 core@bootstrap$ journalctl
 ```
@@ -388,26 +386,26 @@ if bootstrap resources is done, so please shutdown the VM and start all worker n
 Login to the cluster :
 
 ```
-root@helper# export KUBECONFIG=/root/ocp4poc/auth/kubeconfig
+root@bastion# export KUBECONFIG=/root/ocp4poc/auth/kubeconfig
 ```
 
 Set Your Registry to Ephemeral
 
 ```
-root@helper# oc patch configs.imageregistry.operator.openshift.io cluster --type merge --patch '{"spec":{"storage":{"emptyDir":{}}}}'
+root@bastion# oc patch configs.imageregistry.operator.openshift.io cluster --type merge --patch '{"spec":{"storage":{"emptyDir":{}}}}'
 ```
 
 Monitor Request Certificate from your machine
 
 ```
-root@helper# watch oc get csr
-root@helper#  oc get csr --no-headers | awk '{print $1}' | xargs oc adm certificate approve
+root@bastion# watch oc get csr
+root@bastion#  oc get csr --no-headers | awk '{print $1}' | xargs oc adm certificate approve
 ```
 
 You can monitor the progress installation :
 
 ```
-root@helper# oc get co
+root@bastion# oc get co
 
 NAME                                       VERSION   AVAILABLE   PROGRESSING   DEGRADED   SINCE
 authentication                             4.2.2     True        False         True       
@@ -442,5 +440,5 @@ storage                                    4.2.2     True        False         F
 Check the password and Web console :
 
 ```
-root@helper# openshift-install wait-for install-complete 
+root@bastion# openshift-install wait-for install-complete 
 ```
