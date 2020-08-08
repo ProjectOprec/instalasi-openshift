@@ -323,7 +323,7 @@ root@bastion# sed -i 's/mastersSchedulable: true/mastersSchedulable: false/g' ma
 Copy Patching Network Config
 
 ```
-root@bastion# cp instalasi-openshift/patch/ 10-*.yaml /root/ocp4poc/openshift/
+root@bastion# cp instalasi-openshift/patch/10-*.yaml /root/ocp4poc/openshift/
 ```
 
 Generate ignition configs
@@ -338,8 +338,9 @@ Copy the Ignition to Web Server
 root@bastion# cd /root/ocp4poc/
 
 root@bastion# cp *.ign /var/www/html/
-```
 
+root@bastion# chmod 664 /var/www/html/*.ign
+```
 
 
 For now you can Booting Bootstrap and Also Master ONLY with PXE Boot, please don't start Worker Node :
