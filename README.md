@@ -4,7 +4,7 @@
 
 ## CHAPTER 1. Requirement for POC Openshift 4.x
 
-> **WARNING :** Please make sure the spec is same and size memory is very important.. Don't set Memory under 12 GB for Cluster Openshift 4.2
+> **WARNING :** Please make sure the spec is same and size memory is very important.. Don't set Memory under 16 GB for Cluster Openshift 4.x
 
 1. Bastion = 1 (vCPU = 4 , Memory = 4 GB, Harddisk = 50 GB)
 2. Bootstrap = 1 (vCPU = 4, Memory = 16 GB, Harddisk = 100 GB)
