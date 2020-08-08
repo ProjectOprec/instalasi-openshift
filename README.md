@@ -253,9 +253,9 @@ root@bastion# ./firewall.sh
 Extract tools openshift
 
 ```
-root@bastion# tar -xvf openshift-client-linux-4.3.2.tar.gz
+root@bastion# tar -xvf openshift-client-linux-4.3.25.tar.gz
 
-root@bastion# tar -xvf openshift-install-linux-4.3.2.tar.gz
+root@bastion# tar -xvf openshift-install-linux-4.3.25.tar.gz
 
 root@bastion# mv oc kubectl openshift-install /usr/bin/
 ```
@@ -406,33 +406,33 @@ You can monitor the progress installation :
 root@bastion# oc get co
 
 NAME                                       VERSION   AVAILABLE   PROGRESSING   DEGRADED   SINCE
-authentication                             4.3.2     True        False         True       
-cloud-credential                           4.3.2     True        False         False     
-cluster-autoscaler                         4.3.2     True        False         False     
-console                                    4.3.2     True        False         True       
-dns                                        4.3.2     False       True          True      
-image-registry                             4.3.2     False       True          False     
-ingress                                    4.3.2     False       True          False     
-insights                                   4.3.2     True        False         True      
-kube-apiserver                             4.3.2     True        True          True       
-kube-controller-manager                    4.3.2     True        False         True       
-kube-scheduler                             4.3.2     True        False         True       
-machine-api                                4.3.2     True        False         False     
-machine-config                             4.3.2     False       False         True       
-marketplace                                4.3.2     True        False         False     
-monitoring                                 4.3.2     False       True          True       
-network                                    4.3.2     True        True          False     
-node-tuning                                4.3.2     False       False         True       
-openshift-apiserver                        4.3.2     False       False         False     
-openshift-controller-manager               4.3.2     False       False         False     
-openshift-samples                          4.3.2     True        False         False     
-operator-lifecycle-manager                 4.3.2     True        False         False     
-operator-lifecycle-manager-catalog         4.3.2     True        False         False     
-operator-lifecycle-manager-packageserver   4.3.2     False       True          False     
-service-ca                                 4.3.2     True        True          False     
-service-catalog-apiserver                  4.3.2     True        False         False     
-service-catalog-controller-manager         4.3.2     True        False         False     
-storage                                    4.3.2     True        False         False     
+authentication                             4.3.25     True        False         True       
+cloud-credential                           4.3.25     True        False         False     
+cluster-autoscaler                         4.3.25     True        False         False     
+console                                    4.3.25     True        False         True       
+dns                                        4.3.25     False       True          True      
+image-registry                             4.3.25     False       True          False     
+ingress                                    4.3.25     False       True          False     
+insights                                   4.3.25     True        False         True      
+kube-apiserver                             4.3.25     True        True          True       
+kube-controller-manager                    4.3.25     True        False         True       
+kube-scheduler                             4.3.25     True        False         True       
+machine-api                                4.3.25     True        False         False     
+machine-config                             4.3.25     False       False         True       
+marketplace                                4.3.25     True        False         False     
+monitoring                                 4.3.25     False       True          True       
+network                                    4.3.25     True        True          False     
+node-tuning                                4.3.25     False       False         True       
+openshift-apiserver                        4.3.25     False       False         False     
+openshift-controller-manager               4.3.25     False       False         False     
+openshift-samples                          4.3.25     True        False         False     
+operator-lifecycle-manager                 4.3.25     True        False         False     
+operator-lifecycle-manager-catalog         4.3.25     True        False         False     
+operator-lifecycle-manager-packageserver   4.3.25     False       True          False     
+service-ca                                 4.3.25     True        True          False     
+service-catalog-apiserver                  4.3.25     True        False         False     
+service-catalog-controller-manager         4.3.25     True        False         False     
+storage                                    4.3.25     True        False         False     
 ```
 
 Check the password and Web console :
