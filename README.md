@@ -53,19 +53,19 @@ root@bastion# yum -y install bind bind-utils
 
 root@bastion# setenforce 0
 
-root@bastion# cp openshift4.3/dns/named.conf /etc/named.conf
+root@bastion# cp instalasi-openshift/dns/named.conf /etc/named.conf
 ```
 
 Setting for PTR :
 
 ```
-root@bastion# cp openshift4.3/dns/10.10.10.in-addr.arpa /var/named/
+root@bastion# cp instalasi-openshift/dns/10.10.10.in-addr.arpa /var/named/
 ```
 
 Setting for A and SRV Record :
 
 ```
-root@bastion# cp openshift4.3/dns/ocp4poc.example.com /var/named/
+root@bastion# cp instalasi-openshift/dns/ocp4poc.example.com /var/named/
 ```
 
 Please restart the service :
@@ -104,7 +104,7 @@ NOTE: Update `/var/named/ocp4poc.example.com and 10.10.10.in-addr.arpa` to match
 ```
 root@bastion# yum -y install haproxy
 
-root@bastion# cp openshift4.3/haproxy/haproxy.cfg /etc/haproxy/
+root@bastion# cp instalasi-openshift/haproxy/haproxy.cfg /etc/haproxy/
 ```
 
 Please edit IP Address for Bootstrap , master and worker.. Please double check in Your DNS Setting
@@ -152,7 +152,7 @@ root@bastion# yum -y install httpd
 change the port Listen to **Port 8000**
 
 ```
-root@bastion# cp openshift4.3/httpd/httpd.conf /etc/httpd/conf/httpd.conf
+root@bastion# cp instalasi-openshift/httpd/httpd.conf /etc/httpd/conf/httpd.conf
 
 root@bastion# mkdir -p /var/www/html/metal/
 ```
@@ -202,7 +202,7 @@ NOTE: Update `/etc/dnsmasq.d/dnsmasq-pxe.conf` to match environment
 ```
 root@bastion# mkdir -pv /var/lib/tftpboot/pxelinux.cfg/
 
-root@bastion# cp openshift4.3/pxelinux.cfg/default /var/lib/tftpboot/pxelinux.cfg/default
+root@bastion# cp instalasi-openshift/pxelinux.cfg/default /var/lib/tftpboot/pxelinux.cfg/default
 ```
 
 Copy Installer Image and Kernel ( Please make sure your source installer CoreOS)
@@ -237,7 +237,7 @@ root@bastion# systemctl enable dnsmasq
 ## CHAPTER 7. Prepare Router and Firewall
 
 ```
-root@bastion# chmod 777 openshift4.3/patch/firewall.sh
+root@bastion# chmod 777 instalasi-openshift/patch/firewall.sh
 ```
 
 Please edit interface NIC with your environment firewall.sh
@@ -269,7 +269,7 @@ root@bastion# mkdir /root/ocp4poc/
 root@bastion# cd /root/ocp4poc/
 ```
 
-Please insert the credential : ( Sample you can check in openshift4.3/patch/install-config-UPDATETHIS.yaml)
+Please insert the credential : ( Sample you can check in instalasi-openshift/patch/install-config-UPDATETHIS.yaml)
 
 ```
 root@bastion# cat install-config.yaml
@@ -323,7 +323,7 @@ root@bastion# sed -i 's/mastersSchedulable: true/mastersSchedulable: false/g' ma
 Copy Patching Network Config
 
 ```
-root@bastion# cp openshift4.3/patch/ 10-*.yaml /root/ocp4poc/openshift/
+root@bastion# cp instalasi-openshift/patch/ 10-*.yaml /root/ocp4poc/openshift/
 ```
 
 Generate ignition configs
